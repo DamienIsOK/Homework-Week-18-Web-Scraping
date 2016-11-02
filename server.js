@@ -15,7 +15,9 @@ var bp = require('body-parser');
 
 // Database config
 var mongojs = require('mongojs');
+// Create a new db names 'npr' and save it to a variable
 var databaseUrl = 'npr';
+// create a new collection named 'titles' and save it to a variable
 var collections = ['titles'];
 
 // Save my database as the db variable
@@ -33,12 +35,14 @@ app.get('/', function(req, res) {
 	res.send('Hello World');
 });
 
-// Get data fromthe DB
+// Get data from the db at the route /all
 app.get('/all', function(req, res) {
+	// find everything in the db. Initiate a callback function
 	db.titles.find({}, function(err, found) {
 		if(err) {
 			console.log(err);
 		} else {
+			// if everything's cool, then write everything to the page
 			res.json(found);
 		}
 	});
@@ -51,8 +55,9 @@ app.get('/scrape', function(req, res) {
 		var $ = cheerio.load(html);
 		// get each element with the title class
 		$('.title').each(function(i, element) {
+			// using jQuery, get the text of each title
 			var title = $(element).text();
-
+			// If there is a title, then save it to the db
 			if(title) {
 				db.titles.save({
 					title: title
@@ -60,6 +65,7 @@ app.get('/scrape', function(req, res) {
 				function(err, saved) {
 					if(err) {
 						console.log(err);
+					// write everything you saved to the db to the console	
 					} else {
 						console.log(saved);
 					}
@@ -71,7 +77,7 @@ app.get('/scrape', function(req, res) {
 	// Write a message to the browser
 	res.send('Scrape complete');
 });
-
+// Start listening at the port ========================================
 app.listen(3000, function() {
   console.log('App running on port 3000!');
 });
