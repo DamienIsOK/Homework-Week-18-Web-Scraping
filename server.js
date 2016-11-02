@@ -35,7 +35,7 @@ app.get('/', function(req, res) {
 
 // Get data fromthe DB
 app.get('/all', function(req, res) {
-	db.scrapeData.find({}, funciton(err, found) {
+	db.titles.find({}, function(err, found) {
 		if(err) {
 			console.log(err);
 		} else {
@@ -45,13 +45,33 @@ app.get('/all', function(req, res) {
 });
 
 // Scrape data from one site and place it into the mongodb db
-app.ghet('/scrape', function(req, res) {
+app.get('/scrape', function(req, res) {
 	request('http://www.npr.org/', function(error, response, html) {
 		// load the html body request into cheerio
 		var $ = cheerio.load(html);
 		// get each element with the title class
 		$('.title').each(function(i, element) {
 			var title = $(element).text();
-		})
-	})
-})
+
+			if(title) {
+				db.titles.save({
+					title: title
+				},
+				function(err, saved) {
+					if(err) {
+						console.log(err);
+					} else {
+						console.log(saved);
+					}
+				});
+			}
+		});
+	});
+
+	// Write a message to the browser
+	res.send('Scrape complete');
+});
+
+app.listen(3000, function() {
+  console.log('App running on port 3000!');
+});
