@@ -13,6 +13,12 @@ var exhb = require('express-handlebars');
 var mongoose = require('mongoose')
 var bp = require('body-parser');
 
+// Change render engine
+app.engine('handlebars', exhb({
+	defaultLayout: 'main'
+}));
+
+app.set('view engine', 'handlebars');
 // Database config
 var mongojs = require('mongojs');
 // Create a new db names 'npr' and save it to a variable
@@ -28,11 +34,18 @@ db.on('error', function(err) {
 	console.log('DB Error:', err);
 });
 
+var damien = [{
+	firstName: 'Damien'
+}, {
+	lastName: 'Wright'
+}];
+
 // Routes =====================================================
 
-// Display hello world at the main route
-app.get('/', function(req, res) {
-	res.send('Hello World');
+// Display text at the main route
+app.get('/test', function(req, res) {
+	// res.send('Hello World');
+	res.render('index', damien[0]);
 });
 
 // Get data from the db at the route /all
@@ -57,6 +70,7 @@ app.get('/scrape', function(req, res) {
 		$('.title').each(function(i, element) {
 			// using jQuery, get the text of each title
 			var title = $(element).text();
+			// var link = $(element)children('a').attr('href');
 			// If there is a title, then save it to the db
 			if(title) {
 				db.titles.save({
@@ -73,7 +87,6 @@ app.get('/scrape', function(req, res) {
 			}
 		});
 	});
-
 	// Write a message to the browser
 	res.send('Scrape complete');
 });
