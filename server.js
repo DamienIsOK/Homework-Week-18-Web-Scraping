@@ -34,19 +34,14 @@ db.on('error', function(err) {
 	console.log('DB Error:', err);
 });
 
-var damien = [{
-	firstName: 'Damien'
-}, {
-	lastName: 'Wright'
-}];
-
 // Routes =====================================================
 
-// Display text at the main route
-app.get('/test', function(req, res) {
+// Display index.handlebars at the main route
+app.get('/', function(req, res) {
 	// res.send('Hello World');
-	res.render('index', damien[0]);
+	res.render('index');
 });
+
 
 // Get data from the db at the route /all
 app.get('/all', function(req, res) {
