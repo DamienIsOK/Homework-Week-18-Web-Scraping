@@ -13,6 +13,9 @@ var exhb = require('express-handlebars');
 var mongoose = require('mongoose')
 var bp = require('body-parser');
 
+// Link to our 'public' folder which has the static files
+app.use(express.static(__dirname + '/public'));
+
 // Change render engine
 app.engine('handlebars', exhb({
 	defaultLayout: 'main'
